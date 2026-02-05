@@ -8,9 +8,9 @@
 
 ### What is this?
 
-This is a **react-native native module** that works on both **iOS** and **Android**, and checks the stores (play/app) for a new version of your app and can prompt your user for an update.
+This is a **react-native native module** that works on **Android**, and checks the stores (play/app) for a new version of your app and can prompt your user for an update.
 
-It uses **embedded** [in-app-updates via Play-Core](https://developer.android.com/guide/playcore/in-app-updates) on Android (to check & download google play patches natively from within the app), and [react-native-siren](https://github.com/GantMan/react-native-siren) on iOS (to check & navigate the user to the AppStore).
+It uses **embedded** [in-app-updates via Play-Core](https://developer.android.com/guide/playcore/in-app-updates) on Android (to check & download google play patches natively from within the app).
 
 ### Why?
 Because to this day I'm not aware of any react-native libraries that use play core to offer embedded in-app-updates besides this one
@@ -21,29 +21,6 @@ Because to this day I'm not aware of any react-native libraries that use play co
 ## Installation
 
 `$ npm install sp-react-native-in-app-updates --save`
-
-<br>
-
-##### iOS only:
-
-On **React Native iOS** you may need to also add the following lines in your Info.plist to be able to launch the store deep link.
-
-```
-<key>LSApplicationQueriesSchemes</key>
-<array>
-  <string>itms-apps</string>
-</array>
-```
-For **Expo Apps** Add the following to your expo `app.json` or `app.config.json` .
-
-```
-"ios": {
-      "infoPlist": {
-        "LSApplicationQueriesSchemes": ["itms-apps"]
-      }
-    },
-```
-Next, rebuild the native files using ```npx expo prebuild --clean && eas build -p ios```
 
 <br>
 
@@ -114,28 +91,6 @@ inAppUpdates.checkNeedsUpdate({ curVersion: '0.0.8' }).then((result) => {
   }
 });
 ```
-### Usage with app updates for specific country (iOS only)
-```javascript
-//                              👇🏻 (optional)
-inAppUpdates.checkNeedsUpdate({ country: 'it' }).then(result => {
-  if (result.shouldUpdate) {
-    const updateOptions: StartUpdateOptions = Platform.select({
-      ios: {
-        title: 'Update available',
-        message: "There is a new version of the app available on the App Store, do you want to update it?",
-        buttonUpgradeText: 'Update',
-        buttonCancelText: 'Cancel',
-        country: 'it', // 👈🏻 the country code for the specific version to lookup for (optional)
-      },
-      android: {
-        updateType: IAUUpdateKind.IMMEDIATE,
-      },
-    });
-    inAppUpdates.startUpdate(updateOptions);
-  }
-});
-```
-<br>
 <br>
 
 ### Methods:
@@ -176,14 +131,6 @@ Where:
 | Option                            | Type                                                                                                                          | Description                                                                                                                                                                                                                 |
 |-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | updateType (Android ONLY)         | (required on Android) [IAUUpdateKind](https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78) | Either `IAUUpdateKind.FLEXIBLE` or `IAUUpdateKind.IMMEDIATE`. This uses play-core below the hood, read more [here](https://developer.android.com/guide/playcore/in-app-updates) about the two modes.                        |
-| title (iOS only)                  | (optional) String                                                                                                             | The title of the alert prompt when there's a new version. (default: `Update Available`)                                                                                                                                     |
-| message (iOS only)                | (optional) String                                                                                                             | The content of the alert prompt when there's a new version (default: `There is an updated version available on the App Store. Would you like to upgrade?`)                                                                  |
-| buttonUpgradeText (iOS only)      | (optional) String                                                                                                             | The text of the confirmation button on the alert prompt (default: `Upgrade `)                                                                                                                                               |
-| buttonCancelText (iOS only)       | (optional) String                                                                                                             | The text of the cancelation button on the alert prompt (default: `Cancel`)                                                                                                                                                  |
-| forceUpgrade (iOS only)           | (optional) Boolean                                                                                                            | If set to true the user won't be able to cancel the upgrade (default: `false`)                                                                                                                                              |
-| bundleId (iOS only)               | (optional) String                                                                                                             | The id that identifies the app (ex: com.apple.mobilesafari). If undefined, it will be retrieved with react-native-device-info. (default: `undefined`)                                                                       |
-| country (iOS only)                | (optional) String                                                                                                             | If set, it will filter by country code while requesting an update, The value should be [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) (default: `undefined`) |
-| versionSpecificOptions (iOS only) | (optional) Array\<IosStartUpdateOptionWithLocalVersion>                                                                       | An array of IosStartUpdateOptionWithLocalVersion that specify rules dynamically based on what version the device is currently running. (default: `undefined`)                                                               |
 
 <br>
 
@@ -221,7 +168,7 @@ Removes an existing download status listener.
 
 ## Typical debugging workflow we had success with:
 
-Debugging in-app-updates is tricky, so arm yourself with patience, enable debug logs by passing true to our library constructor. To enable `console.log` for _release_ you may need `react-native log-android` or `react-native log-ios`.
+Debugging in-app-updates is tricky, so arm yourself with patience, enable debug logs by passing true to our library constructor. To enable `console.log` for _release_ you may need `react-native log-android`.
 
 First of all use a **REAL device**.
 

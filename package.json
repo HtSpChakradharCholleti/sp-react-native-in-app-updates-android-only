@@ -13,7 +13,6 @@
     "cpp",
     "!lib/typescript/example",
     "!android/build",
-    "!ios/build",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__"
@@ -31,7 +30,6 @@
   },
   "keywords": [
     "react-native",
-    "ios",
     "android"
   ],
   "repository": "https://github.com/SudoPlz/sp-react-native-in-app-updates",
@@ -46,7 +44,6 @@
   },
   "dependencies": {
     "react-native-device-info": "10.3.0",
-    "react-native-siren": "^0.0.7",
     "semver": "^7.7.1",
     "underscore": "1.12.1"
   },
